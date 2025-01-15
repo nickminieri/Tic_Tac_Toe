@@ -1,0 +1,190 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+
+char TicTacToe[3][3] = {{' ', ' ', ' '}, {' ', ' ', ' '}, {' ', ' ', ' '}}; // 2D array for the Tic-Tac-Toe board
+
+void TTTboard() { // function to print the Tic-Tac-Toe board
+    printf("\nTic-Tac-Clemson:\n"); // Clemsons Very Own Tic-Tac-Toe Game
+    printf("Player 1 (C) - Player 2 (U)\n"); // C is for Player 1 and U is for Computer
+
+    printf(" --- --- ---\n");
+    printf("| %c | %c | %c |\n", TicTacToe[0][0], TicTacToe[0][1], TicTacToe[0][2]);
+    printf(" --- --- ---\n");
+    printf("| %c | %c | %c |\n", TicTacToe[1][0], TicTacToe[1][1], TicTacToe[1][2]);
+    printf(" --- --- ---\n");
+    printf("| %c | %c | %c |\n", TicTacToe[2][0], TicTacToe[2][1], TicTacToe[2][2]);
+    printf(" --- --- ---\n");
+}
+
+void computermove() { // function for computer's random move
+    int n; // n is the random number
+    do {
+        n = rand() % 9 + 1; // random number between 1-9
+        int i = (n - 1) / 3; // i is the row
+        int j = (n - 1) % 3; // j is the column
+        if (TicTacToe[i][j] == ' ') {  // if the box is blank, the computer will place a letter U in the box
+            TicTacToe[i][j] = 'U';
+            break;
+        }
+    } while (1);
+
+}
+
+int Draw() { // function to check if there is a draw. If there is a box that is blank, the game will continue.
+    int i, j;
+    for (i = 0; i < 3; i++) {
+        for (j = 0; j < 3; j++) {
+            if (TicTacToe[i][j] == ' ') {
+                return 3;
+            }
+        }
+    }
+    return 1;
+}
+
+int winner() { // function to check if there is a winner. If there is a winner, the game will end.
+    int i;
+    // check for a row winner
+    for (i = 0; i < 3; i++) {
+        if (TicTacToe[i][0] == TicTacToe[i][1] && TicTacToe[i][1] == TicTacToe[i][2]) {
+            if (TicTacToe[i][0] == 'C') {
+                return 1;
+            } else if (TicTacToe[i][0] == 'U') {
+                return 2;
+            }
+        }
+    }
+
+    // check for a column winner
+    for (i = 0; i < 3; i++) {
+        if (TicTacToe[0][i] == TicTacToe[1][i] && TicTacToe[1][i] == TicTacToe[2][i]) {
+            if (TicTacToe[0][i] == 'C') {
+                return 1; // player 1 wins
+            } else if (TicTacToe[0][i] == 'U') {
+                return 2; // computer wins
+            }
+        }
+    }
+
+    // check for a diagonal winner
+    if (TicTacToe[0][0] == TicTacToe[1][1] && TicTacToe[1][1] == TicTacToe[2][2]) {
+        if (TicTacToe[0][0] == 'C') {
+            return 1; // player 1 wins
+        } else if (TicTacToe[0][0] == 'U') {
+            return 2; // computer wins
+        }
+    }
+    if (TicTacToe[0][2] == TicTacToe[1][1] && TicTacToe[1][1] == TicTacToe[2][0]) {
+        if (TicTacToe[0][2] == 'C') {
+            return 1; // player 1 wins
+        } else if (TicTacToe[0][2] == 'U') {
+            return 2; // computer wins
+        }
+    }
+
+    // check for a draw
+    for (i = 0; i < 3; i++) {
+        for (int j = 0; j < 3; j++) {
+            if (TicTacToe[i][j] == ' ') {
+                return 3; // no possible winner, game is declared a draw (return(3))
+            }
+        }
+    }
+
+    return 0;
+}
+
+int main() { // main function
+
+    //char player1, player2; // players stored as a char in the tictactoe array (board)
+    char input; // input from user
+
+ // Ask the user if they want to play a game
+    do {
+        printf("Do you want to play a game? (Y/N)" );
+        scanf(" %c", &input);
+        if (input == 'Y' || input == 'y') { // If the user inputs Y or y, the program will continue
+            printf("\nGreat! Let's play! Welcome to the Game of Tic-Tac-Toe!\n");
+        }
+        else if (input == 'N' || input == 'n') { // If the user inputs N or n, the program will end
+            printf("No problem. Have a nice day!\n");
+            return 0;
+        }
+        else {
+            printf("Invalid input. Please enter Y or N.\n");
+        }
+    } while (input != 'Y' && input != 'y' && input != 'N' && input != 'n');
+    // If the user inputs anything other than Y, y, N, or n, the program will ask the user to input again
+
+    while (1) {
+        srand(time(0)); // generates a random number
+        int playerturn = 1;
+        int userinput;
+        int gameover = 0;
+
+        TTTboard(); // prints the board
+        while (!gameover) {
+            if (playerturn == 1) { // player 1's turn
+
+                int read; // read is the quit input from the user
+                printf("Player 1's turn (C). Enter a number: ");
+                read = scanf("%d", &userinput);
+                while (!read && (userinput < 1 || userinput > 9)) {
+                    while ((read = getchar()) != '\n') {
+                        if (read == 'q' || read == 'Q') { // if the user inputs q or Q, the program will end
+                            printf("\nThanks for playing! Exiting now. Have a nice day!\n\n");
+                            return 0;
+                        }
+                    }
+                    printf("Please enter a valid number between 1 and 9: ");
+                    read = scanf("%d", &userinput);
+                }
+                int i = (userinput - 1) / 3;
+                int j = (userinput - 1) % 3;
+                if(TicTacToe[i][j] != ' '){ // if the box is already filled, the user will be prompted to choose another box
+                    printf("\nThis number has already been chosen, please select one that wasn't.\n");
+                } else {
+                    TicTacToe[i][j] = 'C';
+                    playerturn = 2;
+                }
+                userinput = 0;
+            } else {
+                printf("Player 2's turn (U).\n");
+                computermove();
+                playerturn = 1;
+            }
+            TTTboard(); // prints the board
+            int win = winner(); // checks if there is a winner
+            if (win != 3) {
+                gameover = 1;
+                if (win == 0) {
+                    printf("It's a draw!\n");
+                } else if (win == 1) {
+                    printf("Player 1 wins! TIC-TAC-CLEMSON!\n");
+                } else {
+                    printf("Player 2 wins!\n");
+                }
+            }
+        }
+        char play_again = 'y'; // asks user if they want to play again
+        do {
+            printf("Do you want to play again? (Y/N)");
+            scanf(" %c", &play_again);
+            if (play_again != 'Y' && play_again != 'y' && play_again != 'N' && play_again != 'n')
+                printf("Enter Y or N. ");
+        } while (play_again != 'Y' && play_again != 'y' && play_again != 'N' && play_again != 'n');
+        if (play_again != 'Y' && play_again != 'y') {
+            printf("\nHave a nice day!\n");
+            break;
+        }
+        int i, j; // resets the board for new game
+        for (i = 0; i < 3; i++) {
+            for (j = 0; j < 3; j++) {
+                TicTacToe[i][j] = ' '; // changes C and U to blank spaces
+            }
+        }
+    }
+    return 0;
+}
